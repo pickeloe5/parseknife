@@ -2,17 +2,13 @@ package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.error.ParseKnifeError
-import dev.nickmatt.parseknife.rule.CharacterRule
-import dev.nickmatt.parseknife.rule.ThenRule
+import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 
 fun testThenRules() {
     val cursor = Cursor("ab")
     val badCursor = Cursor("ac")
-    val rule = ThenRule(
-        CharacterRule(cursor[0]!!),
-        CharacterRule(cursor[1]!!)
-    )
+    val rule = r(cursor.source[0], cursor.source[1])
     val length = rule.test(cursor)
     assert(length == 2) {"Expected test to return length of 2"}
 
