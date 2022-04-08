@@ -4,8 +4,10 @@ import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.error.ParseKnifeError
 
 class OrRule(
-    private vararg val children: Rule
+    vararg _children: Any
 ): Rule {
+
+    private val children = _children.map { Rule.infer(it) }
 
     private fun findSignificantError(vararg pkes: ParseKnifeError): ParseKnifeError {
         var result = pkes[0]

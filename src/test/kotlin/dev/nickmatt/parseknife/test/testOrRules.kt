@@ -1,12 +1,11 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.rule.CharacterRule
-import dev.nickmatt.parseknife.rule.OrRule
+import dev.nickmatt.parseknife.rule.r
 
 fun testOrRules() {
     val cursor = Cursor("abc")
-    val rule = OrRule(CharacterRule('a'), CharacterRule('b'))
+    val rule = r.or('a', 'b')
 
     assert(rule.test(cursor) == 1) {"Expected test to pass with length of 1"}
     assert(cursor.index == 0) {"Expected test to not mutate location index"}

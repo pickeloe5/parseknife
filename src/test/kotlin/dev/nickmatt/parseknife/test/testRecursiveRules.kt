@@ -2,25 +2,18 @@ package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.error.UnexpectedCharacterError
-import dev.nickmatt.parseknife.rule.*
+import dev.nickmatt.parseknife.rule.Rule
+import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 
 fun testRecursiveRules() {
     val cursor = Cursor("(a(a))")
-    val aRule = CharacterRule('a')
-    val opRule = CharacterRule('(')
-    val cpRule = CharacterRule(')')
-    lateinit var gRule: ThenRule
-    val rule = object: Rule {
-        private lateinit var _root: Rule
-        private val root: Rule get() {
-            if (!::_root.isInitialized)
-                _root = ManyRule(OrRule(aRule, gRule))
-            return _root
-        }
-        override fun test(c: Cursor) = root.test(c)
+
+    lateinit var gRule: Rule
+    val rule = r.ref {
+        r.many(r.or('a', gRule))
     }
-    gRule = ThenRule(opRule, rule, cpRule)
+    gRule = r('(', rule, ')')
 
     assert(rule.test(cursor) == cursor.length) {"Expected full source to pass rule's test"}
     cursor.index = 1
