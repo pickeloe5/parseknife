@@ -3,7 +3,6 @@ package dev.nickmatt.parseknife.rule
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.error.RuleInferenceError
-import kotlin.reflect.KFunction
 
 abstract class Rule {
 
