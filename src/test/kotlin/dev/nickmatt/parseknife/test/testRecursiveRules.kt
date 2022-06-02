@@ -15,13 +15,13 @@ fun testRecursiveRules() {
     }
     gRule = r('(', rule, ')')
 
-    assert(rule.test(cursor) == cursor.length) {"Expected full source to pass rule's test"}
+    assert(rule.makeToken(cursor).value == cursor.source.text) {"Expected full source to pass rule's test"}
     cursor.index = 1
-    assert(rule.test(cursor) == 4) {"Expected indices 1 through 4 to pass rule's test"}
+    assert(rule.makeToken(cursor).value == cursor.source[1..4]) {"Expected indices 1 through 4 to pass rule's test"}
 
     try {
         cursor.index = 4
-        rule.test(cursor)
+        rule.makeToken(cursor)
         assert(false) {"Expected test to fail at index 4"}
     } catch (e: Error) {
         if (e is AssertionError)

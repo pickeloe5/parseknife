@@ -5,14 +5,17 @@ import dev.nickmatt.parseknife.error.ParseKnifeError
 
 class MaybeRule(
     _root: Any
-): Rule {
+): Rule() {
 
-    private val root = Rule.infer(_root)
+    private val root = infer(_root)
 
     override fun test(c: Cursor) = try {
-        root.test(c)
+        root.makeToken(c)
     } catch (e: ParseKnifeError) {
-        0
+        c.makeToken(0) // With Rule.wrap added, we can likely remove this empty token by default
     }
+
+    override fun toString() =
+        "$root?"
 
 }

@@ -8,6 +8,12 @@ object r {
     inline fun ref(crossinline resolve: () -> Rule) =
         Rule.refer(resolve)
 
+    inline fun wrap(r: Rule) =
+        Rule.wrap(r)
+
+    fun any(length: Int? = null) =
+        AnyRule(length)
+
     fun char(vararg c: Char) =
         CharacterRule(*c)
 
@@ -22,5 +28,11 @@ object r {
 
     fun maybe(r: Any) =
         MaybeRule(r)
+
+    fun not(r: Any) =
+        NotRule(r)
+
+    fun eof() =
+        EofRule()
 
 }

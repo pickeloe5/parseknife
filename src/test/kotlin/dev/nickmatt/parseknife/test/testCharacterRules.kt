@@ -7,14 +7,14 @@ import java.lang.AssertionError
 
 fun testCharacterRules() {
     val cursor = Cursor("a")
-    val rule = r(cursor.source[0])
+    val rule = r(cursor[0]!!)
 
-    val length = rule.test(cursor)
-    assert(length == 1) {"Should have matched exactly one character"}
+    val token = rule.makeToken(cursor)
+    assert(token.value == "a") {"Should have matched exactly one character"}
 
     cursor.index++
     try {
-        rule.test(cursor)
+        rule.makeToken(cursor)
         assert(false) {"Should have failed the character rule's test"}
     } catch (e: Error) {
         if (e is AssertionError)

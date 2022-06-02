@@ -8,12 +8,11 @@ import java.lang.AssertionError
 fun testThenRules() {
     val cursor = Cursor("ab")
     val badCursor = Cursor("ac")
-    val rule = r(cursor.source[0], cursor.source[1])
-    val length = rule.test(cursor)
-    assert(length == 2) {"Expected test to return length of 2"}
+    val rule = r(cursor[0]!!, cursor[1]!!)
+    assert(rule.makeToken(cursor).value == cursor.source.text) {"Expected test to return length of 2"}
 
     try {
-        rule.test(badCursor)
+        rule.makeToken(badCursor)
         assert(false) {"Expected test to fail for bad source"}
     } catch(e: Error) {
         if (e is AssertionError)

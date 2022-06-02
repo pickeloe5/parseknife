@@ -2,42 +2,51 @@ package dev.nickmatt.parseknife
 
 import dev.nickmatt.parseknife.rule.Rule
 
-data class Cursor(
-    val source: String,
-    var index: Int = 0
+class Cursor(
+    val source: Source,
+    _index: Int? = null
 ) {
 
-    val length get() = source.length
+    var index = _index ?: 0
+
+    constructor(sourceText: String, _index: Int? = null):
+            this(Source(sourceText), _index)
 
     operator fun get(i: Int) =
-        source.getOrNull(index + i)
+        source[index + i]
 
     operator fun plusAssign(i: Int) {
         index += i
     }
 
-    fun consume(r: Rule) {
-        this += r.test(this)
-    }
-
-    inline fun branch(meth: () -> Unit): Int {
+    inline fun branch(meth: (MutableList<Token>) -> Unit): Token {
+        val children = mutableListOf<Token>()
         val start = index
-        meth()
-        val end = index
+        val end: Int
+        try {
+            meth(children)
+            end = index
+        } finally {
+            index = start
+        }
 
-        index = start
-        return end - start
+        return makeToken(end - start)
+            .withChildren(children)
     }
 
-    fun makeCoords(): Pair<Int, Int> {
-        var lineBreakIndex = 0
-        var line = 1
-        for (i in 0 until index)
-            if (source[i] == '\n') {
-                lineBreakIndex = i
-                line++
-            }
-        return Pair(line, index + 1 - lineBreakIndex)
+    fun makeToken(length: Int = 1) =
+        source.makeToken(index until index + length)
+
+    fun makeCoords(i: Int = index) =
+        source.makeCoords(i)
+
+    fun consume(rule: Rule): Token {
+        val token = rule.makeToken(this)
+        index += token.value.length
+        return token
     }
+
+    fun consume(rules: List<Rule>) =
+        rules.map { consume(it) }
 
 }

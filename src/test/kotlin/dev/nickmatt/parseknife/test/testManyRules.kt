@@ -9,13 +9,13 @@ fun testManyRules() {
     val cursor = Cursor("aab")
     val rule = r.many('a')
 
-    assert(rule.test(cursor) == 2) {"Expected test to match first two characters"}
+    assert(rule.makeToken(cursor).value == "aa") {"Expected test to match first two characters"}
     cursor.index = 1
-    assert(rule.test(cursor) == 1) {"Expected test at index 1 to match next character"}
+    assert(rule.makeToken(cursor).value == "a") {"Expected test at index 1 to match next character"}
 
     try {
         cursor.index = 2
-        rule.test(cursor)
+        rule.makeToken(cursor)
         assert(false) {"Expected test at index 2 to fail"}
     } catch (e: Error) {
         if (e is AssertionError)
