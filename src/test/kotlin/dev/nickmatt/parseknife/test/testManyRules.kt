@@ -1,7 +1,7 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.error.UnexpectedCharacterError
+import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 
@@ -20,8 +20,8 @@ fun testManyRules() {
     } catch (e: Error) {
         if (e is AssertionError)
             throw e
-        if (e !is UnexpectedCharacterError)
-            return assert(false) {"Test should have failed with an UnexpectedCharacterError"}
+        if (e !is ParseKnifeError)
+            return assert(false) {"Test should have failed with a ParseKnifeError"}
         assert(e.index == 2) {"Test at index 2 should have failed immediately"}
     }
 

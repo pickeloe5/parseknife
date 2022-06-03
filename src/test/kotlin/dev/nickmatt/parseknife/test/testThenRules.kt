@@ -1,7 +1,7 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.error.ParseKnifeError
+import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 

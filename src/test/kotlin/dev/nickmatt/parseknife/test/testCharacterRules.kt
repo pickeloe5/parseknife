@@ -1,12 +1,12 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.error.UnexpectedCharacterError
+import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 
 fun testCharacterRules() {
-    val cursor = Cursor("a")
+    val cursor = Cursor("ab")
     val rule = r(cursor[0]!!)
 
     val token = rule.makeToken(cursor)
@@ -19,7 +19,7 @@ fun testCharacterRules() {
     } catch (e: Error) {
         if (e is AssertionError)
             throw e
-        assert(e is UnexpectedCharacterError) {"Should have thrown an UnexpectedCharacterError"}
+        assert(e is ParseKnifeError) {"Should have thrown a ParseKnifeError"}
     }
 
     println("Successfully tested CharacterRules")

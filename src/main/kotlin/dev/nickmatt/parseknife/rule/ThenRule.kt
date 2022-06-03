@@ -1,30 +1,24 @@
 package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.Token
 
-class ThenRule(
+open class ThenRule(
     vararg _children: Any
 ): Rule() {
 
     companion object {
-        private val whitespace =
-            MaybeRule(ManyRule(CharacterRule(' ', '\t', '\n')))
+        private val WHITESPACE = MaybeRule(ManyRule(CharacterRule.WHITESPACE))
     }
 
     private val children = _children.map { infer(it) }
     private var whitespaceSensitive = false
 
-    override fun test(c: Cursor): Token {
-        val t = makeToken(c.branch {
-            for (i in children.indices) {
-                if (!whitespaceSensitive)
-                    c += whitespace.makeToken(c).value.length
-                it.add(c.consume(children[i]))
-
-            }
-        })
-        return t
+    override fun test(c: Cursor) = c.branch {
+        children.map {
+            if (!whitespaceSensitive)
+                c.consume(WHITESPACE)
+            c.consume(it)
+        }.toTypedArray()
     }
 
     fun withWhitespaceSensitivity(): ThenRule {
@@ -32,7 +26,10 @@ class ThenRule(
         return this
     }
 
-    override fun toString() =
-        "(${children.joinToString(" ")})"
+    override fun toString(): String {
+        val result = "(${children.joinToString(" ")})"
+        return if (whitespaceSensitive) "$result^"
+            else result
+    }
 
 }

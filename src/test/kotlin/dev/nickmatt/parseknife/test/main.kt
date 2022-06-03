@@ -23,7 +23,6 @@ fun logToken(t: Token, depth: Int = 0) {
 }
 
 fun main() {
-    testMetaParser()
     testCharacterRules()
     testThenRules()
     testOrRules()
@@ -33,4 +32,5 @@ fun main() {
     testTokenMeta()
     testTokenChildren()
     testRuleHelper()
+    testMetaParser()
 }

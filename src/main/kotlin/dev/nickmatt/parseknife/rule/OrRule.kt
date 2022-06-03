@@ -2,9 +2,9 @@ package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
-import dev.nickmatt.parseknife.error.ParseKnifeError
+import dev.nickmatt.parseknife.ParseKnifeError
 
-class OrRule(
+open class OrRule(
     vararg _children: Any
 ): Rule() {
 
@@ -22,11 +22,7 @@ class OrRule(
         val errors = mutableListOf<ParseKnifeError>()
         for (r in children)
             return ParseKnifeError.doCatching(errors::add) {
-                val childToken = r.makeToken(c)
-                var t = c.makeToken(childToken.value.length)
-                t.children.add(childToken)
-                t = makeToken(t)
-                t
+                c.makeToken(r.makeToken(c))
             } ?: continue
         throw findSignificantError(*errors.toTypedArray())
     }

@@ -2,7 +2,7 @@ package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
 
-class AnyRule(
+open class AnyRule(
     _length: Int? = null
 ): Rule() {
 
@@ -12,6 +12,6 @@ class AnyRule(
         c.makeToken(length)
 
     override fun toString() =
-        "$"
+        length.toString()
 
 }

@@ -1,7 +1,7 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.error.UnexpectedCharacterError
+import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.rule.Rule
 import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
@@ -15,9 +15,11 @@ fun testRecursiveRules() {
     }
     gRule = r('(', rule, ')')
 
-    assert(rule.makeToken(cursor).value == cursor.source.text) {"Expected full source to pass rule's test"}
+    assert(rule.makeToken(cursor).value == cursor.source.text)
+        {"Expected full source to pass rule's test"}
     cursor.index = 1
-    assert(rule.makeToken(cursor).value == cursor.source[1..4]) {"Expected indices 1 through 4 to pass rule's test"}
+    assert(rule.makeToken(cursor).value ==cursor.source.text.substring(1..4))
+        {"Expected indices 1 through 4 to pass rule's test"}
 
     try {
         cursor.index = 4
@@ -26,8 +28,8 @@ fun testRecursiveRules() {
     } catch (e: Error) {
         if (e is AssertionError)
             throw e
-        if (e !is UnexpectedCharacterError)
-            return assert(false) {"Test should have failed with an UnexpectedCharacterError"}
+        if (e !is ParseKnifeError)
+            return assert(false) {"Test should have failed with a ParseKnifeError"}
         assert(e.index == 4) {"Test at index 4 should have failed at index 4"}
     }
 

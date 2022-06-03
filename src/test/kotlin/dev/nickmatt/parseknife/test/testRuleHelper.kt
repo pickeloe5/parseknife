@@ -1,10 +1,6 @@
 package dev.nickmatt.parseknife.test
 
-import dev.nickmatt.parseknife.error.RuleInferenceError
-import dev.nickmatt.parseknife.rule.AnyRule
-import dev.nickmatt.parseknife.rule.CharacterRule
-import dev.nickmatt.parseknife.rule.ThenRule
-import dev.nickmatt.parseknife.rule.r
+import dev.nickmatt.parseknife.rule.*
 import java.lang.AssertionError
 
 fun testRuleHelper() {
@@ -20,7 +16,7 @@ fun testRuleHelper() {
     } catch (e: Error) {
         if (e is AssertionError)
             throw e
-        if (e !is RuleInferenceError)
+        if (e !is Rule.InferenceError)
             return assert(false) {"Expected inferring an Float to throw a RuleInferenceError"}
         assert(e.received == received) {"Expected bad Float to be stored on RuleInferenceError"}
     }

@@ -4,41 +4,8 @@ import dev.nickmatt.parseknife.rule.CharacterRule
 import dev.nickmatt.parseknife.rule.Rule
 import dev.nickmatt.parseknife.rule.ThenRule
 import dev.nickmatt.parseknife.rule.r
-import kotlin.math.exp
 
-val name = r.many(CharacterRule.ALPHASCORE)
-    .withMeta("ruleName", "ruleName")
-val eof = r.eof()
-    .withMeta("ruleName", "eof")
-
-lateinit var recursiveExpression: Rule
-val expression = Rule.refer {
-    val escapedContent = ThenRule('\\', r.any())
-        .withWhitespaceSensitivity()
-    val char = ThenRule(
-        '\'',
-        r.or(escapedContent, r.not('\''))
-            .withMeta("ruleName", "content"),
-        '\''
-    )
-        .withWhitespaceSensitivity()
-        .withMeta("ruleName", "char")
-
-    val group = r('(', recursiveExpression, ')')
-        .withMeta("ruleName", "group")
-    val decorator = r.many(r.or('+', '*', '?', '!', '^'))
-        .withMeta("ruleName", "decorator")
-    val wildcard = r('$')
-        .withMeta("ruleName", "wildcard")
-
-    val term = ThenRule(
-        r.or(wildcard, char, name, group)
-            .withMeta("ruleName", "termValue"),
-        r.maybe(decorator)
-    )
-        .withWhitespaceSensitivity()
-        .withMeta("ruleName", "term")
-
+val expression: Rule = Rule.refer {
     val and = ThenRule(
         term, r.maybe(
             r.many(
@@ -54,11 +21,50 @@ val expression = Rule.refer {
         .withMeta("ruleName", "or")
 }
 
+private val ruleName = r.many(CharacterRule.ALPHASCORE)
+    .withMeta("ruleName", "ruleName")
+
+private val integer = r.many(CharacterRule.DIGIT)
+    .withMeta("ruleName", "integer")
+
+private val character = run {
+    val escape = '\\'
+    val delimiter = '\''
+    ThenRule(
+        delimiter,
+        r.or(
+            ThenRule(
+                escape,
+                r.any()
+            ).withWhitespaceSensitivity(),
+            r.not(delimiter)
+        ).withMeta("ruleName", "content"),
+        delimiter
+    )
+}
+    .withWhitespaceSensitivity()
+    .withMeta("ruleName", "character")
+
+private val group = r('(', expression, ')')
+    .withMeta("ruleName", "group")
+
+private val decorator = r.many(r.or('+', '*', '?', '!', '^'))
+private val term = ThenRule(
+    r.or(integer, character, ruleName, group)
+        .withMeta("ruleName", "termValue"),
+    r.maybe(decorator)
+        .withMeta("ruleName", "decorator")
+)
+    .withWhitespaceSensitivity()
+    .withMeta("ruleName", "term")
+
+private val eof = r.eof()
+    .withMeta("ruleName", "endOfFile")
+
 val rule = run {
-    recursiveExpression = expression
     r(
         r.many(
-            r(name, '=', expression, ';')
+            r(ruleName, '=', expression, ';')
                 .withMeta("ruleName", "rule")
         ).withMeta("ruleName", "language"),
         eof

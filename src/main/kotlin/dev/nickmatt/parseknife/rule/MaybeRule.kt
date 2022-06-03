@@ -1,18 +1,21 @@
 package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.error.ParseKnifeError
+import dev.nickmatt.parseknife.ParseKnifeError
 
-class MaybeRule(
+open class MaybeRule(
     _root: Any
 ): Rule() {
 
     private val root = infer(_root)
 
     override fun test(c: Cursor) = try {
-        root.makeToken(c)
+        val child = root.makeToken(c)
+        val t = c.makeToken(child.length)
+        t.children.add(child)
+        t
     } catch (e: ParseKnifeError) {
-        c.makeToken(0) // With Rule.wrap added, we can likely remove this empty token by default
+        c.makeToken(0)
     }
 
     override fun toString() =

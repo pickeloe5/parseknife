@@ -2,23 +2,23 @@ package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
-import dev.nickmatt.parseknife.error.ParseKnifeError
-import dev.nickmatt.parseknife.error.UnexpectedCharacterError
+import dev.nickmatt.parseknife.ParseKnifeError
 
-class NotRule(
+open class NotRule(
     _root: Any
 ): Rule() {
     private val root: Rule = infer(_root)
+
     override fun test(c: Cursor): Token {
-        val received: Char?
         try {
-            received = root.makeToken(c).value.getOrNull(0)
+            root.makeToken(c)
         } catch (e: ParseKnifeError) {
             return c.makeToken(1)
         }
-        throw UnexpectedCharacterError(c, received)
+        throw ParseKnifeError(c, this)
     }
 
     override fun toString() =
         "$root!"
+
 }

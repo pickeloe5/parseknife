@@ -2,9 +2,11 @@ package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
-import dev.nickmatt.parseknife.error.RuleInferenceError
 
 abstract class Rule {
+
+    class InferenceError(val received: Any): Error(
+        "Expected rule literal (char, string, regex, etc.), received: ${received.javaClass.name}")
 
     companion object {
         fun infer(vararg args: Any): Rule {
@@ -17,7 +19,7 @@ abstract class Rule {
                 return AnyRule(arg)
             if (arg is Char)
                 return CharacterRule(arg)
-            throw RuleInferenceError(arg)
+            throw InferenceError(arg)
         }
 
         inline fun refer(crossinline resolve: () -> Rule) = object: Rule() {
@@ -33,10 +35,7 @@ abstract class Rule {
 
         fun wrap(root: Rule) = object: Rule() {
             override fun test(c: Cursor): Token {
-                val child = root.test(c)
-                val token = c.makeToken(child.value.length)
-                token.children.add(child)
-                return makeToken(token)
+                return c.makeToken(root.test(c))
             }
         }
     }
@@ -49,12 +48,6 @@ abstract class Rule {
 
     fun withMeta(key: String, value: Any): Rule {
         meta[key] = value
-        return this
-    }
-    fun withMeta(vararg pairs: Pair<String, Any>): Rule {
-        pairs.forEach { (key, value) ->
-            withMeta(key, value)
-        }
         return this
     }
 

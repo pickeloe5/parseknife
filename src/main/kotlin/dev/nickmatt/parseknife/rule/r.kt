@@ -14,8 +14,8 @@ object r {
     fun any(length: Int? = null) =
         AnyRule(length)
 
-    fun char(vararg c: Char) =
-        CharacterRule(*c)
+    fun char(c: Char) =
+        CharacterRule(c)
 
     fun then(vararg r: Any) =
         ThenRule(*r)

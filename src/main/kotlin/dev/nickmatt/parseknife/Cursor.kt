@@ -13,40 +13,38 @@ class Cursor(
             this(Source(sourceText), _index)
 
     operator fun get(i: Int) =
-        source[index + i]
+        source.text.getOrNull(index + i)
 
     operator fun plusAssign(i: Int) {
         index += i
     }
 
-    inline fun branch(meth: (MutableList<Token>) -> Unit): Token {
-        val children = mutableListOf<Token>()
+    fun consume(r: Rule): Token {
+        val t = r.makeToken(this)
+        index += t.length
+        return t
+    }
+
+    inline fun branch(meth: () -> Array<Token>): Token {
         val start = index
-        val end: Int
+        val children: Array<Token>
         try {
-            meth(children)
-            end = index
+            children = meth()
         } finally {
             index = start
         }
+        return makeToken(*children)
+    }
 
-        return makeToken(end - start)
-            .withChildren(children)
+    fun makeToken(vararg children: Token): Token {
+        val last = children.last()
+        val result = Token(source, index,
+            last.index + last.value.length - index)
+        result.children.addAll(children)
+        return result
     }
 
     fun makeToken(length: Int = 1) =
-        source.makeToken(index until index + length)
-
-    fun makeCoords(i: Int = index) =
-        source.makeCoords(i)
-
-    fun consume(rule: Rule): Token {
-        val token = rule.makeToken(this)
-        index += token.value.length
-        return token
-    }
-
-    fun consume(rules: List<Rule>) =
-        rules.map { consume(it) }
+        Token(source, index, length)
 
 }
