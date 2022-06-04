@@ -7,7 +7,7 @@ import java.lang.AssertionError
 
 fun testCharacterRules() {
     val cursor = Cursor("ab")
-    val rule = r(cursor[0]!!)
+    val rule = r(cursor[0])
 
     val token = rule.makeToken(cursor)
     assert(token.value == "a") {"Should have matched exactly one character"}

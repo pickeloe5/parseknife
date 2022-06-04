@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="parseknife">
+    <output-path>$PROJECT_DIR$/out/artifacts/parseknife</output-path>
+    <root id="archive" name="parseknife.jar">
+      <element id="module-output" name="parseknife" />
+    </root>
+  </artifact>
+</component>

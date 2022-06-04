@@ -10,21 +10,18 @@ open class OrRule(
 
     private val children = _children.map { infer(it) }
 
-    private fun findSignificantError(vararg pkes: ParseKnifeError): ParseKnifeError {
-        var result = pkes[0]
-        for (i in 1 until pkes.size)
-            if (pkes[i].index > result.index)
-                result = pkes[i]
-        return result
-    }
+    override fun test(cursor: Cursor): Token {
 
-    override fun test(c: Cursor): Token {
         val errors = mutableListOf<ParseKnifeError>()
-        for (r in children)
-            return ParseKnifeError.doCatching(errors::add) {
-                c.makeToken(r.makeToken(c))
-            } ?: continue
-        throw findSignificantError(*errors.toTypedArray())
+
+        for (child in children) try {
+            return cursor.makeToken(
+                child.makeToken(cursor))
+
+        } catch (e: ParseKnifeError) {
+            errors.add(e)
+        }
+        throw errors.maxByOrNull { it.index }!!
     }
 
     override fun toString() =

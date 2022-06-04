@@ -9,16 +9,34 @@ data class Token(
     inner class QueryFailedError:
         ParseKnifeError(this@Token, "Could not find child matching query")
 
+    inner class OrphanedTokenError:
+        ParseKnifeError(this@Token, "Could not find parent for token")
+
     val meta = mutableMapOf<String, Any>()
-    val children = mutableListOf<Token>()
+    val children: MutableList<Token> = TokenChildren(this)
     val length = value.length
 
-    constructor(_source: Source, _index: Int, length: Int): this(_source, _index,
-        _source.text.substring(_index until _index + length))
+    var parentOrNull: Token? = null
+    var parent: Token
+        get() = parentOrNull ?: throw OrphanedTokenError()
+        set(value) { parentOrNull = value }
 
-    fun withMeta(moreMeta: Map<String, Any>): Token {
-        for ((key, value) in moreMeta)
-            meta[key] = value
+    constructor(_source: Source, match: MatchResult):
+            this(_source, match.range.first, match.value)
+
+    constructor(_source: Source, group: MatchGroup):
+            this(_source, group.range.first, group.value)
+
+    constructor(_source: Source, _index: Int, length: Int):
+            this(_source, _index, _source[_index until _index + length])
+
+    fun withChildren(vararg tokens: Token): Token {
+        children.addAll(tokens)
+        return this
+    }
+
+    fun withMeta(k: String, v: String): Token {
+        meta[k] = v
         return this
     }
 
@@ -42,7 +60,7 @@ data class Token(
         }
     }
 
-    fun query(depth: Int? = null, meth: (Token) -> Boolean): Token {
+    fun queryOrNull(depth: Int? = null, meth: (Token) -> Boolean): Token? {
         var result: Token? = null
         walk(depth) {
             if (meth(it)) {
@@ -51,10 +69,9 @@ data class Token(
             } else null
         }
         return result
-            ?: throw QueryFailedError()
     }
 
-    fun queryAll(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
+    fun queryAny(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
         val result = mutableListOf<Token>()
         walk(depth) {
             if (meth(it)) {
@@ -62,9 +79,28 @@ data class Token(
                 true
             } else null
         }
+        return result.toTypedArray()
+    }
+
+    fun query(depth: Int? = null, meth: (Token) -> Boolean) =
+        queryOrNull(depth, meth)
+            ?: throw QueryFailedError()
+
+    fun queryMany(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
+        val result = queryAny(depth, meth)
         if (result.isEmpty())
             throw QueryFailedError()
-        return result.toTypedArray()
+        return result
+    }
+
+    override fun toString(): String {
+        var result = "($index;$value) $meta"
+        if (children.isEmpty())
+            return result
+        result += "\n${
+            children.joinToString("\n")
+        }".replace("\n", "\n\t")
+        return result
     }
 
 }

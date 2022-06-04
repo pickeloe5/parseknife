@@ -6,18 +6,14 @@ open class ThenRule(
     vararg _children: Any
 ): Rule() {
 
-    companion object {
-        private val WHITESPACE = MaybeRule(ManyRule(CharacterRule.WHITESPACE))
-    }
-
     private val children = _children.map { infer(it) }
     private var whitespaceSensitive = false
 
-    override fun test(c: Cursor) = c.branch {
+    override fun test(cursor: Cursor) = cursor.branch {
         children.map {
             if (!whitespaceSensitive)
-                c.consume(WHITESPACE)
-            c.consume(it)
+                cursor.consume(RegexRule.WHITESPACE)
+            cursor.consume(it)
         }.toTypedArray()
     }
 
@@ -27,9 +23,13 @@ open class ThenRule(
     }
 
     override fun toString(): String {
-        val result = "(${children.joinToString(" ")})"
-        return if (whitespaceSensitive) "$result^"
-            else result
+
+        var result = "(${children.joinToString(" ")})"
+
+        if (whitespaceSensitive)
+            result += "^"
+
+        return result
     }
 
 }

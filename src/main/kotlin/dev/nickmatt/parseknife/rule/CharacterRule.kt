@@ -7,23 +7,16 @@ import dev.nickmatt.parseknife.ParseKnifeError
 open class CharacterRule(
     private val expected: Char
 ): Rule() {
+    override fun test(cursor: Cursor): Token {
 
-    companion object {
-        private fun split(s: String) = s.map {CharacterRule(it)}.toTypedArray()
-        val WHITESPACE = OrRule(*split(" \t\n"))
-        val ALPHASCORE = OrRule(*split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"))
-        val DIGIT = OrRule(*split("0123456789"))
-    }
+        val received = cursor[0]
 
-    override fun test(c: Cursor): Token {
-        val received = c[0]
-            ?: throw ParseKnifeError(c, "Unexpected end of source")
         if (received != expected)
-            throw ParseKnifeError(c, this)
-        return c.makeToken()
+            throw ParseKnifeError(cursor, this)
+
+        return cursor.makeToken()
     }
 
     override fun toString() =
         "'$expected'"
-
 }

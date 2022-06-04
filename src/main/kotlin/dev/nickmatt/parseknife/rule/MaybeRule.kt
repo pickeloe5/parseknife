@@ -9,13 +9,13 @@ open class MaybeRule(
 
     private val root = infer(_root)
 
-    override fun test(c: Cursor) = try {
-        val child = root.makeToken(c)
-        val t = c.makeToken(child.length)
-        t.children.add(child)
-        t
+    override fun test(cursor: Cursor) = try {
+
+        cursor.makeToken(root.makeToken(cursor))
+
     } catch (e: ParseKnifeError) {
-        c.makeToken(0)
+
+        cursor.makeToken(0)
     }
 
     override fun toString() =

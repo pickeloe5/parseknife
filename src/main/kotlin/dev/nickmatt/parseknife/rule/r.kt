@@ -1,5 +1,8 @@
 package dev.nickmatt.parseknife.rule
 
+import dev.nickmatt.parseknife.Cursor
+import dev.nickmatt.parseknife.Token
+
 object r {
 
     operator fun invoke(vararg args: Any) =
@@ -8,7 +11,10 @@ object r {
     inline fun ref(crossinline resolve: () -> Rule) =
         Rule.refer(resolve)
 
-    inline fun wrap(r: Rule) =
+    inline fun make(crossinline test: (Cursor) -> Token) =
+        Rule.make(test)
+
+    fun wrap(r: Rule) =
         Rule.wrap(r)
 
     fun any(length: Int? = null) =
@@ -34,5 +40,13 @@ object r {
 
     fun eof() =
         EofRule()
+
+    fun regex(
+        expression: Regex
+    ) = RegexRule(expression)
+
+    fun regex(
+        expression: String
+    ) = RegexRule(Regex(expression))
 
 }

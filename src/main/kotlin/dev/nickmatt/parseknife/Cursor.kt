@@ -14,6 +14,7 @@ class Cursor(
 
     operator fun get(i: Int) =
         source.text.getOrNull(index + i)
+            ?: throw ParseKnifeError(i, "Unexpected end of source")
 
     operator fun plusAssign(i: Int) {
         index += i
@@ -39,9 +40,8 @@ class Cursor(
     fun makeToken(vararg children: Token): Token {
         val last = children.last()
         val result = Token(source, index,
-            last.index + last.value.length - index)
-        result.children.addAll(children)
-        return result
+            last.index + last.length - index)
+        return result.withChildren(*children)
     }
 
     fun makeToken(length: Int = 1) =

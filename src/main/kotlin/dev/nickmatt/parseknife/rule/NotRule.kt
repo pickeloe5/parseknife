@@ -7,15 +7,21 @@ import dev.nickmatt.parseknife.ParseKnifeError
 open class NotRule(
     _root: Any
 ): Rule() {
+
     private val root: Rule = infer(_root)
 
-    override fun test(c: Cursor): Token {
+    override fun test(cursor: Cursor): Token {
+
         try {
-            root.makeToken(c)
+            root.makeToken(cursor)
+
         } catch (e: ParseKnifeError) {
-            return c.makeToken(1)
+            if (cursor.index >= cursor.source.text.length)
+                throw ParseKnifeError(cursor, this)
+            return cursor.makeToken(1)
         }
-        throw ParseKnifeError(c, this)
+
+        throw ParseKnifeError(cursor, this)
     }
 
     override fun toString() =

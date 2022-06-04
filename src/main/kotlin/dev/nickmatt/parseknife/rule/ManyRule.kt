@@ -1,7 +1,6 @@
 package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.ParseKnifeError
 
 open class ManyRule(
@@ -10,10 +9,11 @@ open class ManyRule(
 
     private val root = infer(_root)
 
-    override fun test(c: Cursor) =
-            c.branch { ParseKnifeError.collectUntil {
-        c.consume(root)
-    } }
+    override fun test(cursor: Cursor) = cursor.branch {
+        ParseKnifeError.collectUntil {
+            cursor.consume(root)
+        }
+    }
 
     override fun toString() =
         "$root+"
