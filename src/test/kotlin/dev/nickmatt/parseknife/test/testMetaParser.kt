@@ -36,7 +36,7 @@ language = rule+;
 
 private fun recycle(ruleMap: RuleMap) =
     Parser.make(r(ruleMap["language"], r.eof())) {
-        TransformTable(it).makeRuleMap()
+        TransformTable.makeRuleMap(it)
     }(source)
 
 fun testMetaParser() {
