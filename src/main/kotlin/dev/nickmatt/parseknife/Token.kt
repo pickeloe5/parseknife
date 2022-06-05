@@ -2,7 +2,9 @@ package dev.nickmatt.parseknife
 
 /**
  * Represents a section of source
+ *
  * Has structured, hierarchical children
+ *
  * As well as metadata
  */
 data class Token(
@@ -75,7 +77,9 @@ data class Token(
 
     /**
      * Walks children breadth-first running the given predicate
+     *
      * Returns the first child for which the predicate returns true
+     *
      * Or null if no children matched the predicate
      */
     fun queryOrNull(depth: Int? = null, meth: (Token) -> Boolean): Token? {
@@ -91,7 +95,9 @@ data class Token(
 
     /**
      * Walks children breadth-first running the given predicate
+     *
      * Returns any children for which the predicate returns true
+     *
      * Does not search children of tokens which matched the predicate
      */
     fun queryAny(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
@@ -107,7 +113,9 @@ data class Token(
 
     /**
      * Walks children breadth-first running the given predicate
+     *
      * Returns the first child for which the predicate returns true
+     *
      * Throwing Token#QueryFailedError if no tokens match the predicate
      */
     fun query(depth: Int? = null, meth: (Token) -> Boolean) =
@@ -116,7 +124,9 @@ data class Token(
 
     /**
      * Walks children breadth-first running the given predicate
+     *
      * Returns all children for which the predicate returns true
+     *
      * Throwing Token#QueryFailedError if no tokens match the predicate
      */
     fun queryMany(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {

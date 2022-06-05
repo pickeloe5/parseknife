@@ -6,7 +6,9 @@ import dev.nickmatt.parseknife.Cursor
  * Passes if all its child rules pass consecutively
  *
  * Whitespace-insensitivity is the default
+ *
  * This is accomplished by consuming any whitespace before every child
+ *
  * see AndRule#withWhitespaceSensitivity
  */
 open class AndRule(

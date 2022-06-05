@@ -6,6 +6,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
 
 /**
  * Passes only when a given rule does not pass
+ *
  * Returns a token of length 1
  */
 open class NotRule(

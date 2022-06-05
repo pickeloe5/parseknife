@@ -4,6 +4,7 @@ import dev.nickmatt.parseknife.rule.Rule
 
 /**
  * Convenience class for error reporting
+ *
  * Most if not all errors thrown throughout parsing should extend this
  */
 open class ParseKnifeError(

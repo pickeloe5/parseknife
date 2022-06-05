@@ -9,6 +9,7 @@ import java.util.regex.Pattern
  * Passes when a given regular expression matches at a cursor
  *
  * Converts captured groups into child tokens by default
+ *
  * Those groups' names are stored in their tokens' metadata under "groupName"
  */
 open class RegexRule(
@@ -25,7 +26,9 @@ open class RegexRule(
 
     /**
      * Returns a lookup map for finding names of groups
+     *
      * Normally, this name is not accessible for MatchGroups
+     *
      * You can, however, lookup groups for names; so we reverse that
      */
     private fun makeGroupNames(match: MatchResult) =
@@ -36,6 +39,7 @@ open class RegexRule(
 
     /**
      * Returns a list of captured groups paired with nullable String names
+     *
      * Useful for converting these groups to tokens, no need to refer to a map
      */
     private fun makeGroups(
@@ -104,6 +108,7 @@ open class RegexRule(
 
     /**
      * Kotlin's regular expressions don't make it easy for us
+     *
      * to access groups and their names in the way we'd like
      */
     private fun makeGroupNames(): Array<String> {

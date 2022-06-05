@@ -5,6 +5,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
 
 /**
  * Passes whether a given rule passes or not
+ *
  * Returns a token of length 0 when its root does not pass
  */
 open class MaybeRule(

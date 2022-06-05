@@ -8,7 +8,9 @@ import dev.nickmatt.parseknife.rule.r
 
 /**
  * Statefully transforms a language token into a map of its named Rules
+ *
  * Uses state to decouple rules from the order in which they're defined
+ *
  * Useful for referencing rules before they're defined (e.g. "a=b+;b='b';")
  */
 class TransformTable private constructor(
@@ -22,9 +24,13 @@ class TransformTable private constructor(
 
     /**
      * For wrapping rules that are only references to other rules
+     *
      * This is an uncommon use case, but a hidden killer
+     *
      * Token metadata would be changed in unpredictable ways
+     *
      * Because the resolved reference would itself be modified
+     *
      * Its metadata overwritten with that of the referencing rule
      */
     var makingReference = false

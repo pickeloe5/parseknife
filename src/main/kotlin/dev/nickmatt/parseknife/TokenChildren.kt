@@ -2,6 +2,7 @@ package dev.nickmatt.parseknife
 
 /**
  * Maintains the Token#parent field
+ *
  * When tokens are added as children, their `parent` field is updated
  */
 class TokenChildren(

@@ -14,7 +14,9 @@ abstract class Rule {
     companion object {
         /**
          * Infers Rules from more primitive types
+         *
          * E.g. Chars become CharacterRules, Regexes become RegexRules, etc.
+         *
          * When more than one argument is passed, they are AndRuled together
          */
         fun infer(vararg args: Any): Rule {
@@ -37,6 +39,7 @@ abstract class Rule {
 
         /**
          * Creates a rule implementation that resolves to another rule's test
+         *
          * Useful for recursive rules that are sometimes tricky to type
          */
         inline fun refer(crossinline resolve: () -> Rule) = object: Rule() {
@@ -74,7 +77,9 @@ abstract class Rule {
     open val meta = mutableMapOf<String, Any>()
 
     /**
-     * Builder pattern helper
+     * Builder pattern helper for [meta]
+     *
+     * The metadata for this rule is applied to the tokens it produces
      */
     fun withMeta(key: String, value: Any): Rule {
         meta[key] = value
