@@ -1,13 +1,13 @@
 import java.net.URL
 
-val pkArtifact = Pair("dev.nickmatt", "0.0.1")
+val pkArtifact = Pair("com.github.pickeloe5", "0.0.1")
 
 group = pkArtifact.first
 version = pkArtifact.second
 
 plugins {
-    kotlin("jvm") version "1.6.21"
     `java-library`
+    kotlin("jvm") version "1.6.21"
     `maven-publish`
     id("org.jetbrains.dokka") version "1.6.21"
 }
@@ -23,6 +23,7 @@ dependencies {
 
 java {
     withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
@@ -53,13 +54,6 @@ publishing {
                     developerConnection.set("scm:git:git@github.com:kevinsawicki/github-maven-example.git")
                 }
             }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "mavenCentral"
-            url = uri("https://repo1.maven.org/maven2")
         }
     }
 }
