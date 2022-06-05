@@ -3,6 +3,9 @@ package dev.nickmatt.parseknife.rule
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
 
+/**
+ * Provides some helper functions to try and make manual rule creation easier
+ */
 object r {
 
     operator fun invoke(vararg args: Any) =

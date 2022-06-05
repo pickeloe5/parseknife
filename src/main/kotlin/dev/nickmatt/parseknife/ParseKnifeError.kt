@@ -2,6 +2,10 @@ package dev.nickmatt.parseknife
 
 import dev.nickmatt.parseknife.rule.Rule
 
+/**
+ * Convenience class for error reporting
+ * Most if not all errors thrown throughout parsing should extend this
+ */
 open class ParseKnifeError(
     val index: Int,
     _message: String,
@@ -33,11 +37,11 @@ open class ParseKnifeError(
             return result.toTypedArray()
         }
 
-        inline fun<T> doCatching(reject: (ParseKnifeError) -> Unit, meth: () -> T) =
+        fun<T> doCatching(reject: ((ParseKnifeError) -> Unit)?, meth: () -> T) =
             try {
                 meth()
             } catch (e: ParseKnifeError) {
-                reject(e)
+                reject?.invoke(e)
                 null
             }
     }

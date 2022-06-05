@@ -4,6 +4,10 @@ import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.ParseKnifeError
 
+/**
+ * Passes when any of its provided children pass
+ * Short-circuits upon hitting a passing rule
+ */
 open class OrRule(
     vararg _children: Any
 ): Rule() {

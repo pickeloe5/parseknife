@@ -4,6 +4,9 @@ import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.Token
 
+/**
+ * Passes for any string of at least a given length defaulting to 1
+ */
 open class AnyRule(
     _length: Int? = null
 ): Rule() {

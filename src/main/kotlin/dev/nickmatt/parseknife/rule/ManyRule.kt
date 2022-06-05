@@ -3,6 +3,9 @@ package dev.nickmatt.parseknife.rule
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.ParseKnifeError
 
+/**
+ * Passes when a given rule passes one or more times in a row
+ */
 open class ManyRule(
     _root: Any
 ): Rule() {

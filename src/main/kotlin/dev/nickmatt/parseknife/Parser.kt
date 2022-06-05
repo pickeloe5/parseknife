@@ -2,6 +2,9 @@ package dev.nickmatt.parseknife
 
 import dev.nickmatt.parseknife.rule.Rule
 
+/**
+ * Helps to run a given rule on different sources such as primitive strings
+ */
 abstract class Parser<T>(
     private val root: Rule
 ) {

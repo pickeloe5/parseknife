@@ -4,6 +4,9 @@ import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.ParseKnifeError
 
+/**
+ * Passes when the given cursor is at the end of its source
+ */
 open class EofRule: Rule() {
     override fun test(cursor: Cursor): Token {
 

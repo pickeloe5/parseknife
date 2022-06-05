@@ -1,5 +1,8 @@
 package dev.nickmatt.parseknife
 
+/**
+ * Convenience class for reading from a source
+ */
 data class Source(
     val text: String
 ) {
@@ -13,6 +16,9 @@ data class Source(
     fun makeToken(group: MatchGroup) =
         Token(this, group)
 
+    /**
+     * Converts "index" to "line" and "column"
+     */
     fun makeCoords(index: Int): Pair<Int, Int> {
         var lineBreakIndex = 0
         var line = 1
