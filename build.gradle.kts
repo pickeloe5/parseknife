@@ -23,7 +23,30 @@ dependencies {
 
 java {
     withSourcesJar()
-    withJavadocJar()
+}
+
+sourceSets {
+    main {
+        java.srcDir("src/main/kotlin")
+        resources.setSrcDirs(listOf<String>())
+    }
+    create("sample") {
+        java.srcDir("src/sample/kotlin")
+        resources.setSrcDirs(listOf<String>())
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += sourceSets["main"].output
+    }
+    test {
+        java.srcDir("src/test/kotlin")
+        resources.setSrcDirs(listOf<String>())
+        compileClasspath += sourceSets["sample"].output
+        runtimeClasspath += sourceSets["sample"].output
+    }
+}
+
+task("run", JavaExec::class) {
+    classpath(sourceSets["test"].runtimeClasspath)
+    mainClass.set("dev.nickmatt.parseknife.test.MainKt")
 }
 
 publishing {
