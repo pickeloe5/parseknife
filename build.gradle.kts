@@ -1,12 +1,19 @@
 import java.net.URL
 
-group = "dev.nickmatt"
-version = "0.0.1"
+val pkArtifact = Pair("dev.nickmatt", "0.0.1")
+
+group = pkArtifact.first
+version = pkArtifact.second
 
 plugins {
     kotlin("jvm") version "1.6.21"
     `java-library`
+    `maven-publish`
     id("org.jetbrains.dokka") version "1.6.21"
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -14,8 +21,47 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
-repositories {
-    mavenCentral()
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = pkArtifact.first
+            artifactId = "parseknife"
+            version = pkArtifact.second
+
+            from(components["java"])
+
+            pom {
+                name.set("ParseKnife")
+                description.set("Extensible Kotlin parsing library")
+                url.set("https://parseknife.nickmatt.dev")
+                licenses { license {
+                    name.set("MIT License")
+                    url.set("https://www.mit.edu/~amini/LICENSE.md")
+                } }
+                developers { developer {
+                    id.set("pickeloe5")
+                    name.set("Nick Mattiacci")
+                    email.set("aboutthepickle@gmail.com")
+                } }
+                scm {
+                    url.set("https://github.com/pickeloe5/parseknife")
+                    connection.set("scm:git:git://github.com:pickeloe5/parseknife.git")
+                    developerConnection.set("scm:git:git@github.com:kevinsawicki/github-maven-example.git")
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "mavenCentral"
+            url = uri("https://repo1.maven.org/maven2")
+        }
+    }
 }
 
 // Opt-in required for named capture-groups on regular expressions
