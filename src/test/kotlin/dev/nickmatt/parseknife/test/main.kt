@@ -14,7 +14,7 @@ fun main() {
     testManyRules()
     testNotRules()
 
-    testThenRules()
+    testAndRules()
     testOrRules()
 
     testRecursiveRules()

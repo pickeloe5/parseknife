@@ -15,11 +15,11 @@ abstract class Rule {
         /**
          * Infers Rules from more primitive types
          * E.g. Chars become CharacterRules, Regexes become RegexRules, etc.
-         * When more than one argument is passed, they are ThenRuled together
+         * When more than one argument is passed, they are AndRuled together
          */
         fun infer(vararg args: Any): Rule {
             if (args.size > 1)
-                return ThenRule(*args.map{ infer(it) }.toTypedArray())
+                return AndRule(*args.map{ infer(it) }.toTypedArray())
             return when (val arg = args[0]) {
                 is Rule -> arg
                 is Int -> AnyRule(arg)
@@ -28,7 +28,7 @@ abstract class Rule {
                     if (arg.length == 1)
                         CharacterRule(arg[0])
                     else
-                        ThenRule(*arg.map { CharacterRule(it) }.toTypedArray())
+                        AndRule(*arg.map { CharacterRule(it) }.toTypedArray())
                 }
                 is Regex -> RegexRule(arg)
                 else -> throw InferenceError(arg)

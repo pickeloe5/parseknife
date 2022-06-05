@@ -13,7 +13,7 @@ internal fun TransformTable.transformValue(parent: Token): Rule {
 
         if (terms.size != 1) {
             makingReference = false
-            r.then(*terms)
+            r.and(*terms)
         } else terms[0]
     }
 

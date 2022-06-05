@@ -42,20 +42,20 @@ private fun recycle(ruleMap: RuleMap) =
 fun testMetaParser() {
     val cycle1 = metaParser(source)
     assert(cycle1["language"] is ManyRule)
-    assert(cycle1["rule"] is ThenRule)
-    assert(cycle1["group"] is ThenRule)
+    assert(cycle1["rule"] is AndRule)
+    assert(cycle1["group"] is AndRule)
     assert(cycle1["integer"] is RegexRule)
 
     val cycle2 = recycle(cycle1)
     assert(cycle2["language"] is ManyRule)
-    assert(cycle2["rule"] is ThenRule)
-    assert(cycle2["group"] is ThenRule)
+    assert(cycle2["rule"] is AndRule)
+    assert(cycle2["group"] is AndRule)
     assert(cycle2["integer"] is RegexRule)
 
     val cycle3 = recycle(cycle2)
     assert(cycle3["language"] is ManyRule)
-    assert(cycle3["rule"] is ThenRule)
-    assert(cycle3["group"] is ThenRule)
+    assert(cycle3["rule"] is AndRule)
+    assert(cycle3["group"] is AndRule)
     assert(cycle3["integer"] is RegexRule)
 
     println("Successfully tested meta.parse")

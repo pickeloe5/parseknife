@@ -7,7 +7,7 @@ fun testRuleHelper() {
 
     assert(r(1) is AnyRule) {"Expected Int to be inferred as AnyRule"}
     assert(r('c') is CharacterRule) {"Expected Char to be inferred as CharacterRule"}
-    assert(r('c', 'c') is ThenRule) {"Expected Chars to be inferred as ThenRule"}
+    assert(r('c', 'c') is AndRule) {"Expected Chars to be inferred as AndRule"}
 
     val received = 54f
     try {

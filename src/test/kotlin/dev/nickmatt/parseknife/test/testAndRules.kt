@@ -5,7 +5,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.rule.r
 import java.lang.AssertionError
 
-fun testThenRules() {
+fun testAndRules() {
     val cursor = Cursor("ab")
     val badCursor = Cursor("ac")
     val rule = r(cursor[0], cursor[1])
@@ -22,5 +22,5 @@ fun testThenRules() {
         assert(e.index == 1) {"Expected failure at index 1"}
     }
 
-    println("Successfully tested ThenRules")
+    println("Successfully tested AndRules")
 }

@@ -3,7 +3,7 @@ package dev.nickmatt.parseknife.meta.transform
 import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.rule.Rule
-import dev.nickmatt.parseknife.rule.ThenRule
+import dev.nickmatt.parseknife.rule.AndRule
 import dev.nickmatt.parseknife.rule.r
 
 internal fun TransformTable.transformTermDecorator(rule: Rule, decorator: Token): Rule {
@@ -19,7 +19,7 @@ internal fun TransformTable.transformTermDecorator(rule: Rule, decorator: Token)
             '+' -> r.many(result)
             '!' -> r.not(result)
             '*' -> r.maybe(r.many(result))
-            '^' -> (result as ThenRule).withWhitespaceSensitivity()
+            '^' -> (result as AndRule).withWhitespaceSensitivity()
             else -> throw ParseKnifeError(decorator,
                 "Expected decorator ('?', '+', '!', etc.)")
         }

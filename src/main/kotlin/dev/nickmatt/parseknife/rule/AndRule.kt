@@ -3,13 +3,13 @@ package dev.nickmatt.parseknife.rule
 import dev.nickmatt.parseknife.Cursor
 
 /**
- * Passes if all the given child-rules pass consecutively
+ * Passes if all its child rules pass consecutively
  *
  * Whitespace-insensitivity is the default
  * This is accomplished by consuming any whitespace before every child
- * see ThenRule#withWhitespaceSensitivity
+ * see AndRule#withWhitespaceSensitivity
  */
-open class ThenRule(
+open class AndRule(
     vararg _children: Any
 ): Rule() {
 
@@ -27,7 +27,7 @@ open class ThenRule(
     /**
      * Prevents this rule from consuming whitespace before each of its children
      */
-    fun withWhitespaceSensitivity(): ThenRule {
+    fun withWhitespaceSensitivity(): AndRule {
         whitespaceSensitive = true
         return this
     }

@@ -26,8 +26,8 @@ object r {
     fun char(c: Char) =
         CharacterRule(c)
 
-    fun then(vararg r: Any) =
-        ThenRule(*r)
+    fun and(vararg r: Any) =
+        AndRule(*r)
 
     fun or(vararg r: Any) =
         OrRule(*r)
