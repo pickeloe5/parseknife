@@ -1,0 +1,15 @@
+{
+  "name": "parseknife",
+  "version": "0.0.1",
+  "devDependencies": {
+    "format-util": "1.0.5",
+    "source-map-loader": "3.0.0",
+    "source-map-support": "0.5.20",
+    "webpack": "5.57.1",
+    "webpack-cli": "4.9.0",
+    "webpack-dev-server": "4.3.1"
+  },
+  "dependencies": {
+    "kotlin": "^1.6.21"
+  },
+}

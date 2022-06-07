@@ -1,21 +1,22 @@
 package dev.nickmatt.parseknife.rule
 
 import dev.nickmatt.parseknife.Cursor
+import dev.nickmatt.parseknife.Source
 import dev.nickmatt.parseknife.Token
+import kotlin.js.RegExp
+import kotlin.js.json
 
 /**
  * Runs a test on a given source at a given index
  */
+@ExperimentalJsExport
 abstract class Rule {
-
-    class InferenceError(val received: Any): Error(
-        "Expected rule literal (char, string, regex, etc.), received: ${received.javaClass.name}")
 
     companion object {
         /**
          * Infers Rules from more primitive types
          *
-         * E.g. Chars become CharacterRules, Regexes become RegexRules, etc.
+         * E.g. Chars become CharacterRules, RegExps become RegexRules, etc.
          *
          * When more than one argument is passed, they are AndRuled together
          */
@@ -25,15 +26,15 @@ abstract class Rule {
             return when (val arg = args[0]) {
                 is Rule -> arg
                 is Int -> AnyRule(arg)
-                is Char -> CharacterRule(arg)
+                is Char -> CharacterRule.make(arg)
                 is String -> {
                     if (arg.length == 1)
-                        CharacterRule(arg[0])
+                        CharacterRule(arg)
                     else
-                        AndRule(*arg.map { CharacterRule(it) }.toTypedArray())
+                        AndRule(*arg.map { CharacterRule.make(it) }.toTypedArray())
                 }
-                is Regex -> RegexRule(arg)
-                else -> throw InferenceError(arg)
+                is RegExp -> RegexRule.make(arg)
+                else -> throw RuleInferenceError(arg)
             }
         }
 
@@ -51,6 +52,8 @@ abstract class Rule {
             }
             override fun test(cursor: Cursor) =
                 root.makeToken(cursor)
+            override fun toString() =
+                root.toString()
         }
 
         /**
@@ -74,7 +77,8 @@ abstract class Rule {
     /**
      * Metadata applied to tokens produced by this Rule
      */
-    open val meta = mutableMapOf<String, Any>()
+    @JsName("meta")
+    open val meta = json()
 
     /**
      * Builder pattern helper for [meta]
@@ -92,17 +96,24 @@ abstract class Rule {
     protected abstract fun test(cursor: Cursor): Token
 
     /**
-     * Applies the metadata from this rule onto the Tokens it produces
+     * Convenience method for both testing and applying metadata
      */
-    fun makeToken(t: Token): Token {
-        for ((k, v) in meta)
-            t.meta[k] = v
+    fun makeToken(c: Cursor): Token {
+        val t = test(c)
+        t.meta.add(meta)
         return t
     }
 
-    /**
-     * Convenience method for both testing and applying metadata
-     */
-    fun makeToken(c: Cursor) = makeToken(test(c))
+    @JsName("match")
+    fun match(source: String, index: Int? = null) =
+        makeToken(Cursor.make(source, index))
+
+    fun matchEntire(source: String): Token? {
+        val cursor = Cursor.make(source)
+        val result = cursor.consume(this)
+        return if (cursor.index != source.length)
+            null
+        else result
+    }
 
 }

@@ -9,6 +9,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
  *
  * Returns a token of length 1
  */
+@ExperimentalJsExport
 open class NotRule(
     _root: Any
 ): Rule() {

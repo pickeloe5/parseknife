@@ -35,7 +35,7 @@ language = rule+;
 """)
 
 private fun recycle(ruleMap: RuleMap) =
-    Parser.make(r(ruleMap["language"], r.eof())) {
+    Parser.make(AndRule(ruleMap["language"], EofRule())) {
         TransformTable.makeRuleMap(it)
     }(source)
 

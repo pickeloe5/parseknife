@@ -6,6 +6,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
 /**
  * Passes when a given rule passes one or more times in a row
  */
+@ExperimentalJsExport
 open class ManyRule(
     _root: Any
 ): Rule() {

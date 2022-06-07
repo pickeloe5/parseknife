@@ -2,12 +2,11 @@ package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.ParseKnifeError
-import dev.nickmatt.parseknife.rule.r
-import java.lang.AssertionError
+import dev.nickmatt.parseknife.rule.CharacterRule
 
 fun testCharacterRules() {
-    val cursor = Cursor("ab")
-    val rule = r(cursor[0])
+    val cursor = Cursor.make("ab")
+    val rule = CharacterRule(cursor[0])
 
     val token = rule.makeToken(cursor)
     assert(token.value == "a") {"Should have matched exactly one character"}

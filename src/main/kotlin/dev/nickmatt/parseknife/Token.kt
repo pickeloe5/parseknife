@@ -1,5 +1,7 @@
 package dev.nickmatt.parseknife
 
+import kotlin.js.json
+
 /**
  * Represents a section of source
  *
@@ -7,47 +9,41 @@ package dev.nickmatt.parseknife
  *
  * As well as metadata
  */
+@ExperimentalJsExport
 data class Token(
     val source: Source,
     val index: Int,
     val value: String
 ) {
 
-    inner class QueryFailedError:
-        ParseKnifeError(this@Token, "Could not find child matching query")
+    companion object {
+        fun make(source: Source, index: Int, length: Int) =
+            Token(source, index, source[index, length])
+    }
 
-    inner class OrphanedTokenError:
-        ParseKnifeError(this@Token, "Could not find parent for token")
+    val meta = json()
 
-    val meta = mutableMapOf<String, Any>()
-    val children: MutableList<Token> = TokenChildren(this)
+    var children = arrayOf<Token>()
 
     var parentOrNull: Token? = null
     var parent: Token
-        get() = parentOrNull ?: throw OrphanedTokenError()
-        set(value) { parentOrNull = value }
-
-    constructor(_source: Source, match: MatchResult):
-            this(_source, match.range.first, match.value)
-
-    constructor(_source: Source, group: MatchGroup):
-            this(_source, group.range.first, group.value)
-
-    constructor(_source: Source, _index: Int, length: Int):
-            this(_source, _index, _source[_index until _index + length])
+        get() = parentOrNull ?: throw OrphanedTokenError(this)
+        private set(value) { parentOrNull = value }
 
     /**
      * Builder pattern utility for adding children
      */
     fun withChildren(vararg tokens: Token): Token {
-        children.addAll(tokens)
+        for (t in tokens)
+            t.parent = this
+        children += tokens
         return this
     }
 
     /**
      * Builder pattern utility for adding metadata
      */
-    fun withMeta(k: String, v: String): Token {
+    fun withMeta(k: String, v: Any?): Token {
         meta[k] = v
         return this
     }
@@ -55,7 +51,8 @@ data class Token(
     /**
      * Convenience method for deep, breadth-first traversal
      */
-    private fun walk(maxDepth: Int? = null, meth: (Token) -> Boolean?) {
+    @JsName("walkAtDepth")
+    fun walk(maxDepth: Int? = null, meth: (Token) -> Boolean?) {
         var targets = arrayOf(this); val nextTargets = mutableListOf<Token>()
         var depth = 1
         while (!(maxDepth != null && depth > maxDepth)) {
@@ -75,6 +72,10 @@ data class Token(
         }
     }
 
+    @JsName("walk")
+    fun jsWalk(meth: (Token) -> Boolean) =
+        walk(null, meth)
+
     /**
      * Walks children breadth-first running the given predicate
      *
@@ -82,6 +83,7 @@ data class Token(
      *
      * Or null if no children matched the predicate
      */
+    @JsName("queryOrNullAtDepth")
     fun queryOrNull(depth: Int? = null, meth: (Token) -> Boolean): Token? {
         var result: Token? = null
         walk(depth) {
@@ -93,6 +95,10 @@ data class Token(
         return result
     }
 
+    @JsName("queryOrNull")
+    fun jsQueryOrNull(meth: (Token) -> Boolean) =
+        queryOrNull(null, meth)
+
     /**
      * Walks children breadth-first running the given predicate
      *
@@ -100,6 +106,7 @@ data class Token(
      *
      * Does not search children of tokens which matched the predicate
      */
+    @JsName("queryAnyAtDepth")
     fun queryAny(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
         val result = mutableListOf<Token>()
         walk(depth) {
@@ -111,6 +118,10 @@ data class Token(
         return result.toTypedArray()
     }
 
+    @JsName("queryAny")
+    fun jsQueryAny(meth: (Token) -> Boolean) =
+        queryAny(null, meth)
+
     /**
      * Walks children breadth-first running the given predicate
      *
@@ -118,9 +129,14 @@ data class Token(
      *
      * Throwing Token#QueryFailedError if no tokens match the predicate
      */
+    @JsName("queryAtDepth")
     fun query(depth: Int? = null, meth: (Token) -> Boolean) =
         queryOrNull(depth, meth)
-            ?: throw QueryFailedError()
+            ?: throw QueryFailedError(this)
+
+    @JsName("query")
+    fun jsQuery(meth: (Token) -> Boolean) =
+        query(null, meth)
 
     /**
      * Walks children breadth-first running the given predicate
@@ -129,12 +145,17 @@ data class Token(
      *
      * Throwing Token#QueryFailedError if no tokens match the predicate
      */
+    @JsName("queryManyAtDepth")
     fun queryMany(depth: Int? = null, meth: (Token) -> Boolean): Array<Token> {
         val result = queryAny(depth, meth)
         if (result.isEmpty())
-            throw QueryFailedError()
+            throw QueryFailedError(this)
         return result
     }
+
+    @JsName("queryMany")
+    fun jsQueryMany(meth: (Token) -> Boolean) =
+        queryMany(null, meth)
 
     override fun toString(): String {
         var result = "($index;$value) $meta"

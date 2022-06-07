@@ -8,6 +8,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
  *
  * Returns a token of length 0 when its root does not pass
  */
+@ExperimentalJsExport
 open class MaybeRule(
     _root: Any
 ): Rule() {

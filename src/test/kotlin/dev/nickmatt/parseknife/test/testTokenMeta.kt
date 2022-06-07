@@ -1,12 +1,12 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.rule.r
+import dev.nickmatt.parseknife.rule.ManyRule
 
 fun testTokenMeta() {
 
-    val cursor = Cursor("a")
-    val rule = r.many('a')
+    val cursor = Cursor.make("a")
+    val rule = ManyRule('a')
 
     val kind = "many-a"
     rule.meta["kind"] = kind

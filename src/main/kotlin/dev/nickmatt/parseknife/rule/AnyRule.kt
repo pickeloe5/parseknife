@@ -7,6 +7,7 @@ import dev.nickmatt.parseknife.Token
 /**
  * Passes for any string of at least a given length defaulting to 1
  */
+@ExperimentalJsExport
 open class AnyRule(
     _length: Int? = null
 ): Rule() {

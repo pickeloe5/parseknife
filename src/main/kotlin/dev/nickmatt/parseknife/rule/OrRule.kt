@@ -8,6 +8,7 @@ import dev.nickmatt.parseknife.ParseKnifeError
  * Passes when any of its provided children pass
  * Short-circuits upon hitting a passing rule
  */
+@ExperimentalJsExport
 open class OrRule(
     vararg _children: Any
 ): Rule() {
@@ -19,9 +20,9 @@ open class OrRule(
         val errors = mutableListOf<ParseKnifeError>()
 
         for (child in children) try {
-            return cursor.makeToken(
+            val result = cursor.makeToken(
                 child.makeToken(cursor))
-
+            return result
         } catch (e: ParseKnifeError) {
             errors.add(e)
         }

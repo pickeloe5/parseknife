@@ -7,7 +7,11 @@ import dev.nickmatt.parseknife.ParseKnifeError
 /**
  * Passes when the given cursor is at the end of its source
  */
+@ExperimentalJsExport
 open class EofRule: Rule() {
+    companion object {
+        val instance = EofRule()
+    }
     override fun test(cursor: Cursor): Token {
 
         if (cursor.index != cursor.source.text.length)

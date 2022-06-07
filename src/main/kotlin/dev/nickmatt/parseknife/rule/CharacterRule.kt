@@ -9,9 +9,16 @@ import dev.nickmatt.parseknife.ParseKnifeError
  *
  * @param expected The character this rule should test for
  */
+@ExperimentalJsExport
 open class CharacterRule(
-    private val expected: Char
+    private val expected: String
 ): Rule() {
+
+    companion object {
+        fun make(expected: Char) =
+            CharacterRule(expected.toString())
+    }
+
     override fun test(cursor: Cursor): Token {
 
         val received = cursor[0]

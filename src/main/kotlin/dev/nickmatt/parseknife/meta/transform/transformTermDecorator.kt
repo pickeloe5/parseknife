@@ -4,14 +4,16 @@ import dev.nickmatt.parseknife.ParseKnifeError
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.rule.Rule
 import dev.nickmatt.parseknife.rule.AndRule
-import dev.nickmatt.parseknife.rule.r
+import dev.nickmatt.parseknife.rule.RuleHelper
 
-internal fun TransformTable.transformTermDecorator(rule: Rule, decorator: Token): Rule {
+private val r = RuleHelper.instance
+
+internal fun TransformTable?.transformTermDecorator(rule: Rule, decorator: Token): Rule {
     var result = rule
 
     if (decorator.value.isEmpty())
         return result
-    else makingReference = false
+    else this?.makingReference = false
 
     for (i in decorator.value.indices)
         result = when (decorator.value[i]) {

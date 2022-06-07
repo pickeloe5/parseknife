@@ -1,9 +1,13 @@
 package dev.nickmatt.parseknife.meta.transform
 
 import dev.nickmatt.parseknife.ParseKnifeError
+import dev.nickmatt.parseknife.QueryFailedError
 import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.meta.UndefinedRuleError
-import dev.nickmatt.parseknife.rule.r
+import dev.nickmatt.parseknife.rule.CharacterRule
+import dev.nickmatt.parseknife.rule.RuleHelper
+
+private val r = RuleHelper.instance
 
 private val REGEX_ESCAPE_REGEX = Regex("\\\\.")
 private val ESCAPE_REGEX = Regex("\\\\(?<code>[tbnr'\"\\\\])")
@@ -17,16 +21,16 @@ private val ESCAPE_CODES = mapOf(
     Pair("\\\\", '\\')
 )
 
-internal fun TransformTable.transformTermValue(value: Token) =
+internal fun TransformTable?.transformTermValue(value: Token) =
     when (value.meta["ruleName"]) {
         "endOfFile" -> r.eof()
-        "integer" -> r.any(Integer.parseInt(value.value))
+        "integer" -> r.any(value.value.toInt())
         "character" -> {
-            val content = value.queryRegexGroup("content").value
-            r.char(ESCAPE_CODES[content] ?: content[0])
+            val content = value.queryRegexGroup("content")
+            CharacterRule.make(ESCAPE_CODES[content] ?: content[0])
         }
         "string" -> {
-            val content = value.queryRegexGroup("content").value
+            val content = value.queryRegexGroup("content")
                 .replace(ESCAPE_REGEX) {
                     ESCAPE_CODES[it.value]?.toString()
                         ?: it.value
@@ -34,7 +38,7 @@ internal fun TransformTable.transformTermValue(value: Token) =
             r(content)
         }
         "regex" -> {
-            val content = value.queryRegexGroup("content").value
+            val content = value.queryRegexGroup("content")
                 .replace(REGEX_ESCAPE_REGEX) {
                     if (it.value[1] == '/')
                         "/"
@@ -43,10 +47,15 @@ internal fun TransformTable.transformTermValue(value: Token) =
             r.regex(content)
         }
         "group" -> transformValue(value)
-        "ruleName" -> try {
-            resolveReference(value.value)
-        } catch (e: UndefinedRuleError) {
-            throw ParseKnifeError(value, e.message!!)
+        "ruleName" -> {
+            if (this == null)
+                throw ParseKnifeError(value,
+                    "Tried to reference a rule without the context of a table")
+            try {
+                resolveReference(value.value)
+            } catch (e: UndefinedRuleError) {
+                throw ParseKnifeError(value, e.message!!)
+            }
         }
-        else -> throw value.QueryFailedError()
+        else -> throw QueryFailedError(value)
     }

@@ -11,6 +11,7 @@ import dev.nickmatt.parseknife.Cursor
  *
  * see AndRule#withWhitespaceSensitivity
  */
+@ExperimentalJsExport
 open class AndRule(
     vararg _children: Any
 ): Rule() {

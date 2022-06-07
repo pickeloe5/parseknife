@@ -4,7 +4,6 @@ import dev.nickmatt.parseknife.Token
 import dev.nickmatt.parseknife.meta.RuleMap
 import dev.nickmatt.parseknife.meta.UndefinedRuleError
 import dev.nickmatt.parseknife.rule.Rule
-import dev.nickmatt.parseknife.rule.r
 
 /**
  * Statefully transforms a language token into a map of its named Rules
@@ -59,7 +58,7 @@ class TransformTable private constructor(
             } ?: throw UndefinedRuleError(name)
 
             if (makingReference)
-                value = r.wrap(value)
+                value = Rule.wrap(value)
 
             rules[name] = value
                 .withMeta("ruleName", name)
@@ -73,7 +72,7 @@ class TransformTable private constructor(
         if (name !in rules && name !in resolveHistory)
             addAttempt(name)
 
-        return rules[name] ?: r.ref {rules[name]!!}
+        return rules[name] ?: Rule.refer {rules[name]!!}
     }
 
 }

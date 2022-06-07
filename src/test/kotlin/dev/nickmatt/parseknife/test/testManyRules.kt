@@ -2,12 +2,11 @@ package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
 import dev.nickmatt.parseknife.ParseKnifeError
-import dev.nickmatt.parseknife.rule.r
-import java.lang.AssertionError
+import dev.nickmatt.parseknife.rule.ManyRule
 
 fun testManyRules() {
-    val cursor = Cursor("aab")
-    val rule = r.many('a')
+    val cursor = Cursor.make("aab")
+    val rule = ManyRule('a')
 
     assert(rule.makeToken(cursor).value == "aa") {"Expected test to match first two characters"}
     cursor.index = 1

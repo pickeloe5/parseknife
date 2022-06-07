@@ -5,21 +5,24 @@ import dev.nickmatt.parseknife.rule.Rule
 /**
  * Represents a moving position within a source
  */
+@ExperimentalJsExport
 class Cursor(
     val source: Source,
     _index: Int? = null
 ) {
 
-    var index = _index ?: 0
+    companion object {
+        fun make(source: String, index: Int? = null) =
+            Cursor(Source(source), index)
+    }
 
-    constructor(sourceText: String, _index: Int? = null):
-            this(Source(sourceText), _index)
+    var index = _index ?: 0
 
     /**
      * Gets the character at this index plus the given offset
      */
     operator fun get(offset: Int) =
-        source.text.getOrNull(index + offset)
+        source.text.getOrNull(index + offset)?.toString()
             ?: throw ParseKnifeError(offset, "Unexpected end of source")
 
     /**
@@ -55,9 +58,10 @@ class Cursor(
     /**
      * Convenience method for grouping a series of Tokens as children of a new parent
      */
+    @JsName("makeTokenFromChildren")
     fun makeToken(vararg children: Token): Token {
         val last = children.last()
-        val result = Token(source, index,
+        val result = Token.make(source, index,
             last.index + last.value.length - index)
         return result.withChildren(*children)
     }
@@ -66,6 +70,6 @@ class Cursor(
      * Returns a token containing the next `length` characters
      */
     fun makeToken(length: Int = 1) =
-        Token(source, index, length)
+        Token.make(source, index, length)
 
 }

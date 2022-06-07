@@ -1,11 +1,11 @@
 package dev.nickmatt.parseknife.test
 
 import dev.nickmatt.parseknife.Cursor
-import dev.nickmatt.parseknife.rule.r
+import dev.nickmatt.parseknife.rule.MaybeRule
 
 fun testMaybeRules() {
-    val cursor = Cursor("a")
-    val rule = r.maybe(cursor[0])
+    val cursor = Cursor.make("a")
+    val rule = MaybeRule(cursor[0])
 
     assert(rule.makeToken(cursor).value == "a") {"Expected rule to match 1 character at index 0"}
 
