@@ -85,7 +85,7 @@ character = /'(?<content>\\.|[^'])'/;
 regex = /\/(?<content>(\\.|[^\/])*)\//;
 string = /"(?<content>(\\.|[^'])*)"/;
 
-endOfFile = "${'$'}eof";
+endOfFile = "$eof";
 integer = /[0-9]+/;
 ruleName = /[a-zA-Z_]+/;
 group = '(' or ')';
