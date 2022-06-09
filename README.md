@@ -1,7 +1,7 @@
 # parseknife
 [![](https://jitpack.io/v/pickeloe5/parseknife.svg)](https://jitpack.io/#pickeloe5/parseknife)
 
-Extensible Kotlin parsing library
+Extensible Kotlin parsing library | [Site](https://parseknife.nickmatt.dev/) | [Docs](https://parseknife.nickmatt.dev/docs/)
 
 ## Usage
 Using ParseKnife primarily revolves around
